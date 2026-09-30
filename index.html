@@ -170,19 +170,43 @@ function speak(text){
 }
 function stopSpeak(){try{speechSynthesis.cancel();}catch(e){}}
 var REC=null, recBase='', recOn=false, recBroken=false;
+var IS_ANDROID=/Android/i.test(navigator.userAgent);
 function recSupported(){return !recBroken&&!!(window.SpeechRecognition||window.webkitSpeechRecognition);}
 function toggleRec(boxId,btnId){
   if(recOn){stopRec();return;}
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR||recBroken){showKeyboardHint();return;}
   var box=$(boxId);recBase=box.value?box.value.replace(/\s*$/,' '):'';
-  REC=new SR();REC.lang='ko-KR';REC.continuous=true;REC.interimResults=true;
-  REC.onresult=function(e){var fin='',tmp='';for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal)fin+=e.results[i][0].transcript;else tmp+=e.results[i][0].transcript;}box.value=recBase+fin+tmp;};
-  REC.onerror=function(e){if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture'){recBroken=true;showKeyboardHint();}stopRec();};
-  REC.onend=function(){if(recOn){try{REC.start();}catch(err){stopRec();}}};
-  try{REC.start();recOn=true;setMicBtn(btnId,true);}catch(err){recBroken=true;showKeyboardHint();}
+  recOn=true;setMicBtn(btnId,true);
+  recSession(SR,box);
 }
-function stopRec(){recOn=false;if(REC){try{REC.onend=null;REC.stop();}catch(e){}}REC=null;document.querySelectorAll('.mic').forEach(function(b){b.classList.add('idle');b.innerHTML=IC.mic;});var st=$('recState');if(st)st.textContent='';}
+/* 한 번 듣기(한 문장). 끝나면 확정하고, 계속 듣는 중이면 다시 시작.
+   안드로이드 크롬은 같은 문장을 여러 결과로 되풀이해 보내므로 마지막 결과 하나만 씁니다. */
+function recSession(SR,box){
+  var rec=new SR();REC=rec;
+  rec.lang='ko-KR';rec.interimResults=true;rec.maxAlternatives=1;rec.continuous=!IS_ANDROID;
+  var cur='';
+  rec.onresult=function(e){
+    if(IS_ANDROID){cur=String(e.results[e.results.length-1][0].transcript||'').trim();}
+    else{
+      var parts=[];
+      for(var i=0;i<e.results.length;i++){var tx=String(e.results[i][0].transcript||'').trim();if(tx&&tx!==parts[parts.length-1])parts.push(tx);}
+      cur=parts.join(' ');
+    }
+    box.value=recBase+cur;
+  };
+  rec.onerror=function(e){
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture'){recBroken=true;recOn=false;showKeyboardHint();}
+  };
+  rec.onend=function(){
+    if(cur){var base=recBase.replace(/\s+$/,'');if(base.slice(-cur.length)!==cur)recBase=recBase+cur+' ';cur='';}
+    if(recOn&&REC===rec){box.value=recBase;setTimeout(function(){if(recOn&&REC===rec)recSession(SR,box);},120);}
+    else if(!recOn){resetMicUi();}
+  };
+  try{rec.start();}catch(err){recBroken=true;recOn=false;showKeyboardHint();resetMicUi();}
+}
+function stopRec(){recOn=false;var r=REC;REC=null;if(r){try{r.stop();}catch(e){}}resetMicUi();}
+function resetMicUi(){document.querySelectorAll('.mic').forEach(function(b){b.classList.add('idle');b.innerHTML=IC.mic;});var st=$('recState');if(st)st.textContent='';}
 function setMicBtn(id,on){var b=$(id);if(!b)return;b.classList.toggle('idle',!on);b.innerHTML=on?IC.stop:IC.mic;var st=$('recState');if(st)st.textContent=on?'듣는 중… 말을 마치면 네모 버튼을 누르세요':'';}
 function showKeyboardHint(){toast('이 화면에서는 마이크를 바로 쓸 수 없어요. 키보드의 마이크 버튼을 눌러 말하면 글자로 입력돼요.');var h=$('kbHint');if(h)h.classList.remove('hidden');}
 function answerBox(id,dark){
