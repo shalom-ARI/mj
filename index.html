@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>면접연습실</title>
+<meta name="theme-color" content="#1E3A5F">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#F6F4EE;--card:#FFFFFF;--line:#DDD8CC;--line2:#ECE8DE;--ink:#1C2430;--muted:#5B6270;--navy:#1E3A5F;--navySoft:#E4EAF2;
+--red:#B42318;--redSoft:#FBE9E7;--orange:#A15C07;--orangeDot:#D98A1C;--orangeSoft:#FDF0DC;--green:#1F7045;--greenSoft:#E3F2E8;--gold:#7A4A06;--goldSoft:#FFF8E8;--goldLine:#EAD9AC;
+--dark:#141C27;--dark2:#1F2A38;--dark3:#2B4466;--darkLine:#3A4A60;--darkText:#EEF1F5;--darkMuted:#A3ADBB}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans KR',system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{min-height:100vh}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--navy)}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative}
+.page{flex:1;padding:20px 20px 110px;display:flex;flex-direction:column;gap:16px}
+.serif{font-family:'Noto Serif KR',serif}
+h1{margin:0;font-family:'Noto Serif KR',serif;font-size:24px;line-height:1.4}
+h2{margin:0;font-size:15px;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}.xs{font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.pad{padding:16px}
+.row{display:flex;align-items:center;gap:12px}
+.col{display:flex;flex-direction:column;gap:8px}
+.grow{flex:1;min-width:0}
+.btn{height:54px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-size:16px;font-weight:600;width:100%}
+.btn:disabled{background:#D6D1C4;color:#4A5060;cursor:default}
+.btn2{height:46px;border:1px solid #C9C3B5;border-radius:12px;background:#fff;font-size:14px;font-weight:500;width:100%}
+.btn-sm{height:36px;border:1px solid #C9C3B5;border-radius:10px;background:#fff;font-size:13px;padding:0 12px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;border-radius:999px;padding:3px 10px;border:1px solid var(--line);background:#fff}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;display:inline-block}
+.lv-고위험{background:var(--red)}.lv-연습필요{background:var(--orangeDot)}.lv-준비완료{background:var(--green)}.lv-미연습{background:#C9C3B5}
+.t-고위험{background:var(--redSoft);color:#8E1B12}.t-연습필요{background:var(--orangeSoft);color:#7A4A06}.t-준비완료{background:var(--greenSoft);color:#1F5A38}.t-미연습{background:#EEEAE0;color:var(--muted)}
+.list>.li{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line2);background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.list>.li:last-child{border-bottom:0}
+.ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ico svg{width:20px;height:20px}
+.done{opacity:.55}
+label.inp{font-size:14px;font-weight:600}
+input.text,textarea.text,select.text{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;font-size:16px}
+textarea.text{min-height:150px;resize:vertical;line-height:1.6}
+input.code{height:56px;font-size:20px;letter-spacing:3px;text-transform:uppercase;border-color:var(--navy)}
+.nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px calc(10px + env(safe-area-inset-bottom));z-index:5}
+.nav button{border:0;background:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;padding:6px 0}
+.nav button.on{color:var(--navy);font-weight:700}
+.nav svg{width:22px;height:22px}
+.top{display:flex;align-items:center;justify-content:space-between}
+.avatar{width:38px;height:38px;border-radius:50%;border:0;background:var(--navySoft);color:var(--navy);font-weight:700}
+.hero{background:var(--navy);color:#fff;border-radius:16px;padding:18px;display:flex;align-items:center;gap:12px}
+.hero select{background:transparent;border:1px solid #7F95B3;color:#DCE5F0;border-radius:999px;padding:4px 10px;font-size:12px;max-width:100%}
+.hero select option{color:#000}
+.dday{font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;line-height:1.1}
+.comment{background:var(--goldSoft);border:1px solid var(--goldLine);border-radius:14px;padding:14px 16px}
+.info{background:var(--navySoft);border-radius:14px;padding:14px 16px;color:#33415A;font-size:13px;line-height:1.6}
+.warn{background:var(--orangeSoft);border-radius:14px;padding:14px 16px;color:#6B3F05;font-size:13px;line-height:1.6}
+.fb{border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.6}
+.fb b{font-size:12px}
+.meter{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:96px}
+.meter i{height:8px;border-radius:2px;background:var(--line2)}
+.axis{display:grid;grid-template-columns:1fr 96px 40px;align-items:center;gap:8px;height:30px;font-size:14px}
+.qbig{font-family:'Noto Serif KR',serif;font-size:19px;font-weight:600;line-height:1.55}
+.loading{position:fixed;inset:0;background:rgba(246,244,238,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:20;padding:30px;text-align:center}
+.spin{width:38px;height:38px;border-radius:50%;border:4px solid var(--navySoft);border-top-color:var(--navy);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;z-index:30;max-width:90%;text-align:center}
+.consent-sec{display:grid;grid-template-columns:72px 1fr;gap:8px 10px;background:var(--ground);border-radius:10px;padding:12px;font-size:13px;line-height:1.55}
+.consent-sec span:nth-child(odd){color:var(--muted);font-weight:600}
+.check{display:flex;align-items:flex-start;gap:12px;cursor:pointer}
+.check input{width:22px;height:22px;margin:0;flex-shrink:0;accent-color:var(--navy)}
+.styles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stylebtn{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:4px}
+.stylebtn.on{border-color:var(--navy);background:var(--navySoft)}
+.seg{display:flex;gap:8px}
+.seg button{flex:1;height:42px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.seg button.on{border-color:var(--navy);background:var(--navySoft);color:var(--navy);font-weight:700}
+/* 실전 면접 (어두운 화면) */
+.darkpage{background:var(--dark);color:var(--darkText);min-height:100vh;padding:20px 18px 28px;display:flex;flex-direction:column;gap:14px}
+.bubble{max-width:88%;border-radius:4px 14px 14px 14px;background:var(--dark2);padding:10px 14px;font-size:14px;line-height:1.55}
+.bubble.me{align-self:flex-end;border-radius:14px 4px 14px 14px;background:var(--dark3);color:#E6EEF8}
+.qcard{background:var(--dark2);border:1px solid var(--darkLine);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.darkpage textarea{background:#0F1620;color:var(--darkText);border-color:var(--darkLine)}
+.darkpage .btn2,.darkpage .btn-sm{background:transparent;color:#DCE3EC;border-color:var(--darkLine)}
+.prog{display:grid;gap:4px}
+.prog i{height:4px;border-radius:2px;background:#2A3646}
+.prog i.on{background:#6FA8E8}
+.mic{width:48px;height:48px;border-radius:50%;border:0;background:#D9573B;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mic.idle{background:var(--navy)}
+.mic svg{width:22px;height:22px}
+.hl{background:#FFE3A3;border-bottom:2px solid #B54708;padding:0 2px}
+details summary{cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div id="overlay"></div>
+
+<script>
+/* ▼▼ 선생님 웹 앱 주소 (…/exec 로 끝나는 주소) ▼▼ */
+var APP_URL = "https://script.google.com/macros/s/AKfycbw6iqmnpnkpo7jCzkgck9JYej79r1c-I2_CDplGCSyJSz4JPjbXIEtit5JRHfK5ue4Vww/exec";
+/* ▲▲ 이 한 줄만 바꾸면 돼요 ▲▲ */
+var S = { tok: null, me: null, pid: null, today: null, queue: [], practice: null, iv: null, tts: true, weakFilter: '전체' };
+
+/* ---------------- 공통 도구 ---------------- */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function $(id){return document.getElementById(id);}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){return null;}}
+function onApiError(m,rej){
+  if(m.indexOf('SESSION_EXPIRED')>=0){store('mj_tok',null);S.tok=null;hideLoading();toast('다시 로그인해 주세요.');showLogin();return;}
+  rej(new Error(m.replace(/^Exception:\s*/,'')));
+}
+function api(fn){
+  var args=Array.prototype.slice.call(arguments,1);
+  return new Promise(function(res,rej){
+    if(window.google&&google.script&&google.script.run){
+      var r=google.script.run.withSuccessHandler(res).withFailureHandler(function(err){onApiError((err&&err.message)||String(err),rej);});
+      r[fn].apply(r,args);return;
+    }
+    // 구글 바깥(학생용 페이지)에서 열렸을 때: 웹 앱 주소로 직접 요청
+    fetch(APP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args}),redirect:'follow'})
+      .then(function(x){return x.json();})
+      .then(function(r){if(r&&r.err)onApiError(r.err,rej);else res(r?r.ok:null);},
+            function(){rej(new Error('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요.'));});
+  });
+}
+function loading(msg,sub){$('overlay').innerHTML='<div class="loading"><div class="spin"></div><div style="font-weight:600">'+esc(msg||'잠시만요')+'</div>'+(sub?'<div class="small muted">'+esc(sub)+'</div>':'')+'</div>';}
+function hideLoading(){$('overlay').innerHTML='';}
+var toastTimer;
+function toast(m){clearTimeout(toastTimer);var d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);toastTimer=setTimeout(function(){d.remove();},3200);}
+function fail(e){hideLoading();toast(e.message||String(e));}
+function render(html){$('app').innerHTML=html;window.scrollTo(0,0);}
+function ddayText(d){if(d===null||d===undefined)return '';return d>0?'D-'+d:(d===0?'D-DAY':'D+'+(-d));}
+
+var IC={
+ mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>',
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>',
+ note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 9h6M9 13h4"/></svg>',
+ doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+ docplus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6M9 14h6"/></svg>',
+ redo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L20 9"/><path d="M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L4 15"/><path d="M4 20v-5h5"/></svg>',
+ link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>',
+ shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+ speaker:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/></svg>',
+ back:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+ stop:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>'
+};
+
+function nav(on){
+  var t=[['home','오늘',IC.home],['interview','모의면접',IC.mic],['weak','취약노트',IC.note],['record','내 생기부',IC.doc]];
+  return '<nav class="nav" aria-label="메뉴">'+t.map(function(x){return '<button type="button" class="'+(x[0]===on?'on':'')+'" onclick="go(\''+x[0]+'\')">'+x[2]+x[1]+'</button>';}).join('')+'</nav>';
+}
+function go(v){stopSpeak();stopRec();if(v==='home')showHome();else if(v==='interview')showInterviewSetup();else if(v==='weak')showWeak();else if(v==='record')showRecord();else if(v==='me')showMe();}
+function topbar(){return '<div class="top"><span class="serif" style="font-size:18px;font-weight:700;color:var(--navy)">면접연습실</span><button class="avatar" type="button" aria-label="내 정보" onclick="go(\'me\')">'+esc((S.me&&S.me.name||'나').charAt(0))+'</button></div>';}
+function backbar(title,fn){return '<div class="row"><button type="button" aria-label="뒤로" onclick="'+fn+'" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center">'+IC.back+'</button><h1 style="font-size:21px">'+esc(title)+'</h1></div>';}
+function curProfile(){if(!S.me)return null;var p=S.me.profiles.filter(function(x){return x.id===S.pid;})[0];return p||S.me.profiles[0]||null;}
+
+/* ---------------- 음성: 읽어주기(TTS) · 말로 답하기(STT) ---------------- */
+function speak(text){
+  if(!S.tts||!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);u.lang='ko-KR';u.rate=1.0;
+    var v=speechSynthesis.getVoices().filter(function(x){return /ko/i.test(x.lang);})[0];if(v)u.voice=v;speechSynthesis.speak(u);}catch(e){}
+}
+function stopSpeak(){try{speechSynthesis.cancel();}catch(e){}}
+var REC=null, recBase='', recOn=false, recBroken=false;
+function recSupported(){return !recBroken&&!!(window.SpeechRecognition||window.webkitSpeechRecognition);}
+function toggleRec(boxId,btnId){
+  if(recOn){stopRec();return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR||recBroken){showKeyboardHint();return;}
+  var box=$(boxId);recBase=box.value?box.value.replace(/\s*$/,' '):'';
+  REC=new SR();REC.lang='ko-KR';REC.continuous=true;REC.interimResults=true;
+  REC.onresult=function(e){var fin='',tmp='';for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal)fin+=e.results[i][0].transcript;else tmp+=e.results[i][0].transcript;}box.value=recBase+fin+tmp;};
+  REC.onerror=function(e){if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='audio-capture'){recBroken=true;showKeyboardHint();}stopRec();};
+  REC.onend=function(){if(recOn){try{REC.start();}catch(err){stopRec();}}};
+  try{REC.start();recOn=true;setMicBtn(btnId,true);}catch(err){recBroken=true;showKeyboardHint();}
+}
+function stopRec(){recOn=false;if(REC){try{REC.onend=null;REC.stop();}catch(e){}}REC=null;document.querySelectorAll('.mic').forEach(function(b){b.classList.add('idle');b.innerHTML=IC.mic;});var st=$('recState');if(st)st.textContent='';}
+function setMicBtn(id,on){var b=$(id);if(!b)return;b.classList.toggle('idle',!on);b.innerHTML=on?IC.stop:IC.mic;var st=$('recState');if(st)st.textContent=on?'듣는 중… 말을 마치면 네모 버튼을 누르세요':'';}
+function showKeyboardHint(){toast('이 화면에서는 마이크를 바로 쓸 수 없어요. 키보드의 마이크 버튼을 눌러 말하면 글자로 입력돼요.');var h=$('kbHint');if(h)h.classList.remove('hidden');}
+function answerBox(id,dark){
+  return '<div class="col"><div class="row" style="align-items:flex-end">'+
+    '<textarea class="text grow" id="'+id+'" placeholder="말하거나 입력해서 답하세요" aria-label="내 답변"></textarea>'+
+    '<button type="button" class="mic idle" id="'+id+'Mic" aria-label="말로 답하기" onclick="toggleRec(\''+id+'\',\''+id+'Mic\')">'+IC.mic+'</button></div>'+
+    '<div class="xs" id="recState" style="color:'+(dark?'#F2C979':'var(--navy)')+'"></div>'+
+    '<div class="xs '+(recSupported()?'hidden':'')+'" id="kbHint" style="color:'+(dark?'var(--darkMuted)':'var(--muted)')+'">키보드의 마이크 버튼을 눌러 말하면 글자로 바뀌어요.</div></div>';
+}
+
+/* ---------------- 로그인 ---------------- */
+function showLogin(){
+  render('<div class="page" style="padding-top:64px;gap:32px">'+
+   '<div class="col" style="gap:14px"><div style="width:52px;height:52px;border-radius:14px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center">'+IC.mic.replace('<svg','<svg width="26" height="26"')+'</div>'+
+   '<h1 style="font-size:32px">면접연습실</h1><p class="muted" style="font-size:15px;line-height:1.6">생활기록부에서 시작해서, 하루 12분씩<br>내 면접 답변을 단단하게 만드는 곳</p></div>'+
+   '<form class="col" style="gap:10px" onsubmit="doLogin(event)"><label class="inp" for="code">로그인 코드</label>'+
+   '<input class="text code" id="code" autocomplete="off" autocapitalize="characters" placeholder="예: 7K2M-9Q4X" maxlength="12">'+
+   '<p class="small muted">담임선생님께 받은 8자리 코드를 입력하세요. 코드는 다른 친구에게 알려주지 마세요.</p>'+
+   '<button class="btn" type="submit" style="margin-top:6px">입장하기</button></form>'+
+   '<p class="small muted" style="margin-top:auto;text-align:center">선생님이신가요? <a href="'+esc(APP_URL)+'?page=teacher" target="_top">교사용 화면</a></p></div>');
+}
+function doLogin(e){
+  e.preventDefault();var code=$('code').value;loading('확인하는 중');
+  api('studentLogin',code).then(function(r){S.tok=r.token;store('mj_tok',r.token);loadMe();}).catch(fail);
+}
+function loadMe(){
+  loading('불러오는 중');
+  api('getStudentState',S.tok).then(function(me){
+    hideLoading();S.me=me;var saved=store('mj_pid');
+    S.pid=me.profiles.some(function(p){return p.id===saved;})?saved:(me.profiles.filter(function(p){return p.dday===null||p.dday>=0;})[0]||me.profiles[0]||{}).id;
+    if(!me.consent)showConsent(true);else showHome();
+  }).catch(fail);
+}
+
+/* ---------------- 개인정보 동의 ---------------- */
+function showConsent(first){
+  var exp=S.me.expireDate;
+  render('<div class="page" style="padding-bottom:40px">'+
+   '<div class="col"><div class="ico" style="background:var(--navySoft);color:var(--navy);width:44px;height:44px">'+IC.shield+'</div>'+
+   '<h1>시작하기 전에<br>개인정보 활용에 동의해 주세요</h1><p class="muted small" style="line-height:1.6">'+esc(S.me.name)+'님의 생활기록부로 맞춤 면접질문을 만들려면 아래 동의가 필요해요.</p></div>'+
+   '<label class="check" style="background:var(--navy);color:#fff;border-radius:14px;padding:16px;align-items:center"><input type="checkbox" id="cAll" onchange="consentAll(this.checked)" style="accent-color:#fff"><span style="font-weight:700;font-size:16px">아래 내용에 모두 동의합니다</span></label>'+
+   '<div class="card">'+
+    '<div class="col pad" style="gap:12px;border-bottom:1px solid var(--line2)"><label class="check"><input type="checkbox" id="c1" onchange="consentSync()"><span style="font-weight:600;line-height:1.45"><span style="color:var(--red)">[필수]</span> 면접 연습을 위한 개인정보 수집·이용 동의</span></label>'+
+    '<div class="consent-sec"><span>목적</span><span>생기부 기반 면접질문 생성, 모의면접 답변 분석, 담임교사의 면접 지도</span>'+
+    '<span>항목</span><span>이름, 학번, 지원 대학·학과·전형, 학교생활기록부 기재 내용, 모의면접 답변(글자로 변환된 내용)</span>'+
+    '<span>보관기간</span><span>생기부 원본 파일은 분석 직후 즉시 삭제하고, 면접 질문 내용에 해당하는 문장만 일부 보관<br>질문·훈련기록: 현재 학년도가 끝나는 이듬해 2월 28일('+esc(exp)+')까지 보관 후 삭제</span></div></div>'+
+    '<div class="col pad" style="gap:12px;border-bottom:1px solid var(--line2)"><label class="check"><input type="checkbox" id="c2" onchange="consentSync()"><span style="font-weight:600;line-height:1.45"><span style="color:var(--red)">[필수]</span> AI 분석을 위한 개인정보 처리위탁·국외 이전 동의</span></label>'+
+    '<div class="consent-sec"><span>받는 곳</span><span>Google LLC (Gemini API, 유료 요금제)</span><span>국가</span><span>미국 등 Google 데이터센터 소재국</span>'+
+    '<span>방법</span><span>분석할 때마다 암호화된 네트워크로 전송, AI 학습에는 쓰이지 않음</span>'+
+    '<span>보관</span><span>부정 사용 감지 목적으로 최대 55일간 보관 후 자동 삭제 (구글 유료 API 정책, 2026년 9월 기준)</span></div></div>'+
+    '<div class="col pad"><label class="check"><input type="checkbox" id="c3" onchange="consentSync()"><span style="font-weight:600;line-height:1.45"><span class="muted">[선택]</span> 실제 면접 후기의 익명 활용 동의</span></label>'+
+    '<span class="small muted" style="padding-left:34px;line-height:1.55">면접이 끝난 뒤 입력한 실제 질문을 이름·학번을 지우고 후배들의 면접 준비 자료로 활용해요.</span></div>'+
+   '</div>'+
+   '<div class="col small" style="line-height:1.6;color:#33394A;gap:6px"><span>동의하지 않을 권리가 있고, 거부해도 불이익은 없어요. 필수 항목에 동의하지 않으면 생기부 맞춤 질문 대신 학과 공통질문으로만 훈련해요.</span>'+
+   '<span class="muted">음성 답변은 휴대폰의 음성 입력 기능으로 글자로 바뀌며, 이 앱은 음성 파일을 저장하지 않아요. 동의 일시와 내용은 기록으로 남고, 언제든 ‘내 정보 › 동의 철회’에서 철회할 수 있어요.</span></div>'+
+   '<button class="btn" id="cGo" type="button" disabled onclick="submitConsent(true)">필수 항목에 동의해 주세요</button>'+
+   '<a href="#" onclick="submitConsent(false);return false" style="text-align:center;font-size:14px">동의하지 않고 공통질문으로만 연습하기</a>'+
+   (first?'':'<button class="btn2" type="button" onclick="showMe()">돌아가기</button>')+
+  '</div>');
+}
+function consentAll(v){['c1','c2','c3'].forEach(function(id){$(id).checked=v;});consentSync();}
+function consentSync(){var ok=$('c1').checked&&$('c2').checked;$('cAll').checked=ok&&$('c3').checked;var b=$('cGo');b.disabled=!ok;b.textContent=ok?'동의하고 시작하기':'필수 항목에 동의해 주세요';}
+function submitConsent(agree){
+  var c=agree?{collect:$('c1').checked,transfer:$('c2').checked,review:$('c3').checked}:{collect:false,transfer:false,review:false};
+  loading('저장하는 중');
+  api('saveConsent',S.tok,c).then(function(r){S.me.consent=r.consent;S.me.reviewConsent=!!c.review;hideLoading();
+    if(r.consent==='동의'&&S.me.profiles.some(function(p){return p.recordBased;})&&!S.me.analysis)showRecord();else showHome();}).catch(fail);
+}
+
+/* ---------------- 오늘의 훈련 (홈) ---------------- */
+function showHome(){
+  if(!S.me)return loadMe();
+  render('<div class="page">'+topbar()+'<div class="card pad muted small">오늘의 훈련을 준비하고 있어요…</div></div>'+nav('home'));
+  api('getToday',S.tok,S.pid).then(function(t){S.today=t;if(t.profile){S.pid=t.profile.id;store('mj_pid',S.pid);}renderHome();}).catch(fail);
+}
+function renderHome(){
+  var t=S.today,me=S.me,p=t.profile;
+  var html='<div class="page">'+topbar()+'<h1 style="font-size:25px">'+esc(me.name)+'님의<br>오늘의 면접훈련</h1>';
+  if(!p){render(html+'<div class="warn">아직 지원 대학이 등록되지 않았어요. 담임선생님께 알려주세요.</div></div>'+nav('home'));return;}
+  var opts=me.profiles.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===p.id?' selected':'')+'>'+esc(x.uni+' '+x.major+' '+ddayText(x.dday))+'</option>';}).join('');
+  html+='<div class="hero"><div class="grow col" style="gap:8px"><span style="font-size:16px;font-weight:600">'+esc(p.uni+' '+p.major)+'</span>'+
+    (me.profiles.length>1?'<select aria-label="대학 바꾸기" onchange="S.pid=this.value;store(\'mj_pid\',S.pid);showHome()">'+opts+'</select>':'<span class="xs" style="color:#C3D0E0">'+esc(p.track||'')+'</span>')+
+    '</div><div class="col" style="align-items:flex-end;gap:0"><span class="xs" style="color:#C3D0E0">면접까지</span><span class="dday">'+esc(ddayText(p.dday)||'-')+'</span></div></div>';
+  if(me.consent!=='동의')html+='<div class="warn">지금은 공통질문으로 연습 중이에요. <a href="#" onclick="showConsent(false);return false">개인정보 활용에 동의</a>하면 내 생기부로 맞춤 질문을 받을 수 있어요.</div>';
+  else if(p.recordBased&&!me.analysis)html+='<button type="button" class="card pad row" style="text-align:left;border:1.5px dashed var(--navy)" onclick="showRecord()"><div class="ico" style="background:var(--navySoft);color:var(--navy)">'+IC.docplus+'</div><div class="grow col" style="gap:2px"><b style="font-size:15px">생기부 올리고 맞춤 질문 받기</b><span class="xs muted">원본 파일은 분석 직후 바로 삭제돼요</span></div></button>';
+  var groups={weak:[],new:[],follow:[]};t.items.forEach(function(i){groups[i.kind].push(i);});
+  var rowFor=function(kind,title,sub,icon,bg,fg,n){return '<button type="button" class="li" onclick="startQueue(\''+kind+'\')"'+(n?'':' disabled')+'><div class="ico" style="background:'+bg+';color:'+fg+'">'+icon+'</div><div class="grow col" style="gap:2px"><span style="font-size:15px;font-weight:600">'+title+'</span><span class="xs muted">'+esc(sub)+'</span></div><span style="font-weight:600;font-size:14px">'+n+'개</span></button>';};
+  var left=function(arr){return arr.filter(function(i){return !i.done;}).length;};
+  var sub=function(arr,empty){if(!arr.length)return empty;var d=arr.length-left(arr);return (arr[0].text.length>22?arr[0].text.slice(0,22)+'…':arr[0].text)+(arr.length>1?' 외 '+(arr.length-1)+'개':'')+(d?' · '+d+'개 완료':'');};
+  html+='<div class="card list">'+
+    rowFor('weak','취약문항 복습',sub(groups.weak,'복습할 취약문항이 없어요'),IC.redo,'var(--redSoft)','var(--red)',groups.weak.length)+
+    rowFor('new','새로운 생기부 질문',sub(groups.new,'새 질문을 모두 연습했어요'),IC.docplus,'var(--navySoft)','var(--navy)',groups.new.length)+
+    rowFor('follow','꼬리질문 훈련',sub(groups.follow,'이어서 연습할 꼬리질문이 없어요'),IC.link,'var(--orangeSoft)','var(--orange)',groups.follow.length)+
+    '<button type="button" class="li" onclick="showInterviewSetup()"><div class="ico" style="background:var(--navy);color:#fff">'+IC.mic+'</div><div class="grow col" style="gap:2px"><span style="font-size:15px;font-weight:600">실전 면접</span><span class="xs muted">'+(t.live.done?'오늘 완료':'AI 면접관 · 말로 답하기')+'</span></div><span style="font-weight:600;font-size:14px">5분</span></button></div>';
+  var remaining=t.items.filter(function(i){return !i.done;}).length;
+  html+='<div class="row" style="justify-content:space-between;padding:0 4px"><span class="small muted">예상 소요시간</span><b>'+t.minutes+'분</b></div>';
+  html+='<button class="btn" type="button" onclick="startQueue()">'+(remaining?'훈련 시작':(t.live.done?'오늘 훈련 완료! 한 번 더 하기':'실전 면접으로 마무리'))+'</button>';
+  var c=t.counts||{};
+  html+='<div class="row small muted" style="justify-content:center;gap:14px"><span class="row" style="gap:5px"><i class="dot lv-고위험"></i>고위험 '+(c['고위험']||0)+'</span><span class="row" style="gap:5px"><i class="dot lv-연습필요"></i>연습필요 '+(c['연습필요']||0)+'</span><span class="row" style="gap:5px"><i class="dot lv-준비완료"></i>준비완료 '+(c['준비완료']||0)+'</span></div>';
+  (t.comments||[]).slice(0,2).forEach(function(cm){
+    html+='<div class="comment col" style="gap:6px"><span class="xs" style="font-weight:700;color:var(--gold)">담임선생님 코멘트'+(cm.read?'':' · 새 글')+'</span>'+(cm.question?'<span class="xs muted">질문: '+esc(cm.question)+'</span>':'')+'<span style="font-size:14px;line-height:1.6;color:#3B2F1A">“'+esc(cm.text)+'”</span></div>';
+  });
+  html+='</div>'+nav('home');
+  render(html);
+  if((t.comments||[]).some(function(c){return !c.read;}))api('markCommentsRead',S.tok).catch(function(){});
+}
+function startQueue(kind){
+  var items=(S.today&&S.today.items)||[];
+  var pick=items.filter(function(i){return (!kind||i.kind===kind)&&!i.done;});
+  if(kind&&!pick.length)pick=items.filter(function(i){return i.kind===kind;});
+  if(!pick.length){showInterviewSetup();return;}
+  S.queue=pick.map(function(i){return i;});
+  S.queueGoLive=!kind;
+  nextInQueue();
+}
+function nextInQueue(){
+  var it=S.queue.shift();
+  if(!it){if(S.queueGoLive&&!(S.today&&S.today.live.done)){toast('문항 훈련 끝! 이제 실전 면접으로 마무리해요.');showInterviewSetup();}else{toast('훈련을 마쳤어요.');showHome();}return;}
+  showPractice({id:it.id,text:it.text,type:it.type,level:it.level,kind:it.kind,required:it.required});
+}
+
+/* ---------------- 연습 (한 문항) ---------------- */
+var KIND_LABEL={weak:'취약문항 복습',new:'새로운 생기부 질문',follow:'꼬리질문 훈련',note:'취약노트',point:'내 생기부 질문'};
+function showPractice(q){
+  S.practice={q:q,result:null};
+  var left=S.queue.length;
+  render('<div class="page" style="padding-bottom:40px">'+backbar(KIND_LABEL[q.kind]||'연습','go(\'home\')')+
+   '<div class="card pad col" style="gap:10px"><div class="row" style="gap:8px"><span class="tag t-'+esc(q.level||'미연습')+'">'+esc(q.level||'미연습')+'</span><span class="xs muted">'+esc(q.type||'')+'</span>'+(q.required?'<span class="tag" style="background:#FFF1CC;color:var(--gold)">★ 담임 필수</span>':'')+'<span class="grow"></span>'+
+   '<button type="button" class="btn-sm" aria-label="질문 듣기" onclick="speak(S.practice.q.text)" style="display:flex;align-items:center;gap:4px;width:auto">'+IC.speaker.replace('<svg','<svg width="16" height="16"')+'듣기</button></div>'+
+   '<div class="qbig">'+esc(q.text)+'</div></div>'+
+   answerBox('ans',false)+
+   '<button class="btn" type="button" onclick="submitPractice()">답변 제출하고 분석 받기</button>'+
+   '<button class="btn2" type="button" onclick="skipPractice()">'+(left?'건너뛰기 (남은 '+left+'개)':'건너뛰기')+'</button></div>');
+  speak(q.text);
+}
+function skipPractice(){stopRec();stopSpeak();if(S.queue.length)nextInQueue();else showHome();}
+function submitPractice(){
+  stopRec();stopSpeak();var a=$('ans').value.trim();
+  if(a.length<5){toast('답변을 조금 더 말해 주세요.');return;}
+  loading('AI가 답변을 분석하고 있어요','9개 항목으로 나눠서 보고 있어요 (10~30초)');
+  api('answerPractice',S.tok,S.pid,S.practice.q.id,a).then(function(r){hideLoading();S.practice.result=r;S.practice.answer=a;showFeedback();}).catch(fail);
+}
+var AXES=['내용 정확성','질문 이해','근거 제시','생기부 일치성','논리성','구체성','답변 구조','전공 이해','추가질문 방어력'];
+function axesHtml(axes){
+  return AXES.map(function(k){var v=(axes||{})[k]||'보통';var n=v==='우수'?3:(v==='보통'?2:1);var col=v==='우수'?'var(--green)':(v==='보통'?'var(--orange)':'var(--red)');
+    return '<div class="axis"><span>'+k+'</span><div class="meter">'+[1,2,3].map(function(i){return '<i style="'+(i<=n?'background:'+col:'')+'"></i>';}).join('')+'</div><span class="xs" style="font-weight:700;text-align:right;color:'+col+'">'+v+'</span></div>';}).join('');
+}
+function fbCards(res,provisional,withNext){
+  var h='';
+  if(res.good)h+='<div class="fb" style="background:var(--greenSoft)"><b style="color:var(--green)">잘 설명한 부분</b><span>'+esc(res.good)+'</span></div>';
+  if(res.conceptFix)h+='<div class="fb" style="background:var(--redSoft)"><b style="color:var(--red)">개념 보완 필요 '+(provisional?'<span class="tag" style="background:#fff;color:var(--muted);margin-left:4px">잠정 · 선생님 확인 전</span>':'')+'</b><span>'+esc(res.conceptFix)+'</span></div>';
+  if(res.mismatch)h+='<div class="fb" style="background:var(--orangeSoft)"><b style="color:#8A4E05">생기부와 다른 부분</b><span>'+esc(res.mismatch)+'</span></div>';
+  if(res.reask)h+='<div class="fb" style="background:var(--orangeSoft)"><b style="color:#8A4E05">면접관이 다시 물을 가능성이 높은 부분</b><span>'+esc(res.reask)+'</span></div>';
+  if(res.nextQuestion&&withNext)h+='<div class="fb" style="background:var(--navy);color:#fff"><b style="color:#C3D0E0">다음 훈련 질문</b><span class="serif" style="font-size:16px;font-weight:600">“'+esc(res.nextQuestion)+'”</span><button type="button" class="btn2" style="background:#fff;color:var(--navy);border:0;font-weight:600" onclick="practiceNext()">지금 바로 답해보기</button></div>';
+  return h;
+}
+function showFeedback(){
+  var r=S.practice.result,res=r.result,q=S.practice.q;
+  var change=r.levelBefore!==r.levelAfter?(esc(r.levelBefore)+' → <b>'+esc(r.levelAfter)+'</b>'):('<b>'+esc(r.levelAfter)+'</b> 유지');
+  render('<div class="page" style="padding-bottom:40px">'+backbar('답변 분석','go(\'home\')')+
+   '<div class="card pad col" style="gap:10px"><span class="xs muted">'+esc(q.type||'')+'</span><b style="font-size:16px;line-height:1.5">'+esc(q.text)+'</b>'+
+   '<div class="col" style="gap:4px;background:var(--ground);border-radius:10px;padding:12px"><span class="xs muted" style="font-weight:700">내 답변</span><span style="font-size:14px;line-height:1.6">'+esc(S.practice.answer)+'</span></div></div>'+
+   '<div class="card pad col" style="gap:2px"><h2 style="margin-bottom:6px">9개 항목으로 나눠 보기</h2>'+axesHtml(res.axes)+'</div>'+
+   fbCards(res,!!res.conceptFix,true)+
+   '<div class="card pad row small"><i class="dot lv-'+esc(r.levelAfter)+'"></i><span>취약질문 노트: '+change+(res.pass?' · 통과':' · 보완 필요')+'</span></div>'+
+   (S.queue.length?'<button class="btn" type="button" onclick="nextInQueue()">다음 훈련 ('+S.queue.length+'개 남음)</button>':'<button class="btn" type="button" onclick="S.queueGoLive?nextInQueue():showHome()">'+(S.queueGoLive?'다음으로':'홈으로')+'</button>')+
+   '<button class="btn2" type="button" onclick="showPractice(S.practice.q)">같은 질문 다시 답하기</button></div>');
+}
+function practiceNext(){
+  var r=S.practice.result;loading('다음 훈련 질문을 준비하는 중');
+  api('addFollowupQuestion',S.tok,S.pid,r.questionId,r.result.nextQuestion).then(function(qid){hideLoading();
+    S.queue.unshift({id:qid,text:r.result.nextQuestion,type:S.practice.q.type,level:'미연습',kind:'follow'});nextInQueue();}).catch(fail);
+}
+
+/* ---------------- 실전 모의면접 ---------------- */
+var STYLE_INFO={'기본형':'표준적인 면접관','친절형':'편안하게 격려하며','탐구형':'탐구 과정을 깊이','전공심화형':'전공 개념까지 심화','압박형':'논리의 빈틈을 끝까지'};
+function showInterviewSetup(){
+  var p=curProfile();
+  if(!p){toast('지원 대학이 없어요.');return;}
+  S.ivStyle=S.ivStyle||'탐구형';S.ivMin=S.ivMin||5;
+  var st=Object.keys(STYLE_INFO).map(function(k){return '<button type="button" class="stylebtn'+(k===S.ivStyle?' on':'')+'" onclick="S.ivStyle=\''+k+'\';showInterviewSetup()"><b style="font-size:14px">'+k+'</b><span class="xs muted">'+STYLE_INFO[k]+'</span></button>';}).join('');
+  render('<div class="page">'+topbar()+'<h1>실전 모의면접</h1>'+
+   '<div class="card pad col"><span class="xs muted">지원</span><b>'+esc(p.uni+' '+p.major)+' <span style="color:var(--red)">'+esc(ddayText(p.dday))+'</span></b>'+(p.method?'<span class="xs muted">'+esc(p.method)+'</span>':'')+'</div>'+
+   '<div class="col"><h2>면접관 성향</h2><div class="styles">'+st+'</div>'+(S.ivStyle==='압박형'?'<p class="xs muted">압박형은 당황시키려는 게 아니라, 논리적 허점을 계속 확인하는 방식이에요.</p>':'')+'</div>'+
+   '<div class="col"><h2>면접 시간</h2><div class="seg">'+[3,5,10].map(function(m){return '<button type="button" class="'+(m===S.ivMin?'on':'')+'" onclick="S.ivMin='+m+';showInterviewSetup()">'+m+'분</button>';}).join('')+'</div></div>'+
+   '<label class="check small"><input type="checkbox" '+(S.tts?'checked':'')+' onchange="S.tts=this.checked"><span>면접관 질문을 소리로 읽어주기</span></label>'+
+   '<div class="info">실제 면접처럼 질문이 이어져요. 답변 속 모호한 표현, 개념 오류, 근거 부족, 생기부와 다른 내용, 지나친 일반화를 찾아 꼬리질문을 해요. 평가는 면접이 끝난 뒤 한꺼번에 보여줘요.</div>'+
+   '<button class="btn" type="button" onclick="startInterview()">면접 시작</button></div>'+nav('interview'));
+}
+function startInterview(){
+  loading('면접관이 들어오고 있어요');
+  api('startInterview',S.tok,S.pid,S.ivStyle,S.ivMin).then(function(r){hideLoading();
+    S.iv={sid:r.sessionId,style:r.style,deadline:Date.now()+r.seconds*1000,turns:[{q:r.question,a:''}],turn:1,max:r.maxTurns,busy:false};
+    renderLive();startTimer();speak(r.question);}).catch(fail);
+}
+var ivTimer=null;
+function startTimer(){clearInterval(ivTimer);var tick=function(){var el=$('ivClock');if(!S.iv||!el){clearInterval(ivTimer);return;}var s=Math.max(0,Math.round((S.iv.deadline-Date.now())/1000));el.textContent=('0'+Math.floor(s/60)).slice(-2)+':'+('0'+s%60).slice(-2);if(s===0)el.style.color='#F2C979';};tick();ivTimer=setInterval(tick,500);}
+function renderLive(){
+  var iv=S.iv,cur=iv.turns[iv.turns.length-1];
+  var bars='';for(var i=1;i<=iv.max;i++)bars+='<i class="'+(i<=iv.turn?'on':'')+'"></i>';
+  var hist=iv.turns.slice(0,-1).map(function(t){return '<div class="col" style="gap:4px"><span class="xs" style="color:var(--darkMuted)">면접관</span><div class="bubble">'+esc(t.q)+'</div></div><div class="bubble me">'+esc(t.a)+'</div>';}).join('');
+  $('app').innerHTML='<div class="darkpage">'+
+   '<div class="row"><div class="grow col" style="gap:4px"><b>실전 모의면접</b><span class="chip" style="background:transparent;color:#C7D2E0;border-color:var(--darkLine);align-self:flex-start">'+esc(iv.style)+' 면접관</span></div>'+
+   '<div class="col" style="align-items:flex-end;gap:0"><span id="ivClock" style="font-size:20px;font-weight:700;letter-spacing:1px">--:--</span><span class="xs" style="color:var(--darkMuted)">남은 시간</span></div></div>'+
+   '<div class="prog" style="grid-template-columns:repeat('+iv.max+',1fr)">'+bars+'</div>'+
+   '<div class="col" style="gap:12px">'+hist+'</div>'+
+   '<div class="qcard"><div class="row"><span class="xs grow" style="color:var(--darkMuted)">면접관 · 질문 '+iv.turn+'</span><button type="button" class="btn-sm" aria-label="질문 다시 듣기" onclick="speakCur()" style="width:auto;display:flex;align-items:center;gap:4px">'+IC.speaker.replace('<svg','<svg width="15" height="15"')+'다시 듣기</button></div>'+
+   '<div class="qbig" style="font-size:18px">'+esc(cur.q)+'</div></div>'+
+   answerBox('ivAns',true)+
+   '<button class="btn" type="button" id="ivSend" onclick="liveAnswer()" style="background:#D9573B">답변 끝</button>'+
+   '<div class="row"><button class="btn2" type="button" onclick="liveSkip()">잘 모르겠어요</button><button class="btn2" type="button" onclick="liveFinish()">면접 종료</button></div>'+
+  '</div>';
+  window.scrollTo(0,document.body.scrollHeight);
+}
+function speakCur(){if(S.iv)speak(S.iv.turns[S.iv.turns.length-1].q);}
+function liveSkip(){$('ivAns').value='잘 모르겠습니다.';liveAnswer();}
+function liveAnswer(){
+  if(S.iv.busy)return;stopRec();stopSpeak();
+  var a=$('ivAns').value.trim();if(!a){toast('답변을 말하거나 입력해 주세요.');return;}
+  S.iv.busy=true;S.iv.turns[S.iv.turns.length-1].a=a;$('ivSend').disabled=true;$('ivSend').textContent='면접관이 생각하는 중…';
+  api('interviewTurn',S.tok,S.iv.sid,a).then(function(r){S.iv.busy=false;
+    if(r.done){liveFinish(true);return;}
+    S.iv.turns.push({q:r.question,a:''});S.iv.turn=r.turn;S.iv.max=r.maxTurns;renderLive();startTimer();speak(r.question);
+  }).catch(function(e){S.iv.busy=false;fail(e);var b=$('ivSend');if(b){b.disabled=false;b.textContent='답변 끝';}});
+}
+function liveFinish(auto){
+  stopRec();stopSpeak();clearInterval(ivTimer);
+  var box=$('ivAns');var pending=box&&box.value.trim()&&!S.iv.turns[S.iv.turns.length-1].a?box.value.trim():'';
+  if(!auto&&!pending&&!S.iv.turns.some(function(t){return t.a;})){S.iv=null;showInterviewSetup();return;}
+  loading('면접이 끝났어요. 답변을 분석하고 있어요','질문 수에 따라 30초~1분 걸려요');
+  api('finishInterview',S.tok,S.iv.sid,pending).then(function(r){hideLoading();S.iv=null;if(S.today)S.today.live.done=true;showLiveResult(r);}).catch(fail);
+}
+function showLiveResult(r){
+  var pass=r.turns.filter(function(t){return t.result.pass;}).length;
+  var html='<div class="page">'+backbar('실전 면접 결과','go(\'home\')')+
+   '<div class="card pad col"><span class="xs muted">'+esc(r.style)+' 면접관 · '+r.turns.length+'문항</span><b style="font-size:17px">통과 '+pass+'개 · 보완 '+(r.turns.length-pass)+'개</b><span class="xs muted">보완이 필요한 꼬리질문은 취약질문 노트에 자동으로 들어갔어요.</span></div>';
+  r.turns.forEach(function(t,i){
+    var ok=t.result.pass;
+    html+='<details class="card" '+(ok?'':'open')+'><summary class="pad col" style="gap:6px"><div class="row" style="gap:8px"><span class="tag '+(ok?'t-준비완료':'t-고위험')+'">'+(ok?'통과':'보완')+'</span><span class="xs muted">질문 '+(i+1)+'</span></div><b style="font-size:15px;line-height:1.5">'+esc(t.question)+'</b>'+
+      (t.reason?'<span class="xs" style="color:#8A4E05;background:var(--orangeSoft);border-radius:8px;padding:5px 10px;align-self:flex-start">꼬리질문 근거 · '+esc(t.reason)+'</span>':'')+'</summary>'+
+      '<div class="col" style="padding:0 16px 16px;gap:10px"><div class="col" style="gap:4px;background:var(--ground);border-radius:10px;padding:12px"><span class="xs muted" style="font-weight:700">내 답변</span><span style="font-size:14px;line-height:1.6">'+esc(t.answer)+'</span></div>'+
+      '<div class="col" style="gap:2px">'+axesHtml(t.result.axes)+'</div>'+fbCards(t.result,!!t.result.conceptFix,false)+'</div></details>';
+  });
+  html+='<button class="btn" type="button" onclick="showHome()">홈으로</button><button class="btn2" type="button" onclick="showInterviewSetup()">한 번 더 면접 보기</button></div>'+nav('interview');
+  render(html);
+}
+
+/* ---------------- 취약질문 노트 ---------------- */
+function showWeak(){
+  render('<div class="page">'+topbar()+'<h1>취약질문 노트</h1><div class="card pad muted small">불러오는 중…</div></div>'+nav('weak'));
+  api('getWeakNote',S.tok,S.pid).then(function(list){S.weak=list;renderWeak();}).catch(fail);
+}
+function renderWeak(){
+  var list=S.weak||[],f=S.weakFilter;
+  var cnt={'고위험':0,'연습필요':0,'준비완료':0};list.forEach(function(q){cnt[q.level]++;});
+  var chips=['전체','고위험','연습필요','준비완료'].map(function(k){var on=k===f;return '<button type="button" class="chip" style="height:34px;padding:0 12px;font-size:13px;'+(on?'background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600':'')+'" onclick="S.weakFilter=\''+k+'\';renderWeak()">'+(k==='전체'?'':'<i class="dot lv-'+k+'" style="width:8px;height:8px"></i>')+k+' '+(k==='전체'?list.length:cnt[k])+'</button>';}).join('');
+  var shown=list.filter(function(q){return f==='전체'||q.level===f;});
+  var html='<div class="page">'+topbar()+'<div class="col" style="gap:6px"><h1>취약질문 노트</h1><p class="small muted">막혔던 질문이 모여요. 2번 연속 성공하면 한 단계씩 올라가요.</p></div>'+
+   '<div class="row" style="flex-wrap:wrap;gap:8px">'+chips+'</div>'+
+   '<div class="card row xs" style="justify-content:space-between;padding:12px 14px"><span class="row" style="gap:5px"><i class="dot lv-고위험" style="width:8px;height:8px"></i>고위험</span><span class="muted">2회 연속 성공 →</span><span class="row" style="gap:5px"><i class="dot lv-연습필요" style="width:8px;height:8px"></i>연습필요</span><span class="muted">→</span><span class="row" style="gap:5px"><i class="dot lv-준비완료" style="width:8px;height:8px"></i>준비완료</span></div>';
+  if(!shown.length)html+='<div class="card pad small muted">'+(list.length?'이 단계의 질문이 없어요.':'아직 연습한 질문이 없어요. 오늘의 훈련부터 시작해 보세요.')+'</div>';
+  shown.forEach(function(q){
+    var hist=q.history.split('').map(function(c){return '<span style="width:18px;height:6px;border-radius:3px;background:'+(c==='O'?'var(--green)':'var(--red)')+'"></span>';}).join('');
+    var note=q.demoted?'준비완료였지만 다시 확인에서 막혀 내려왔어요':(q.level==='준비완료'?(q.due?'오늘 다시 확인할 차례예요':(q.nextReview?q.nextReview.slice(5).replace('-','/')+'에 다시 확인해요':'')):(q.level!=='고위험'&&q.streak===1?'한 번 더 성공하면 올라가요':''));
+    html+='<button type="button" class="card pad col" style="gap:8px;text-align:left;'+(q.level==='고위험'?'border:1.5px solid #E7B7B0':'')+'" onclick="practiceFromNote(\''+esc(q.id)+'\')">'+
+      '<div class="row" style="gap:8px;width:100%"><i class="dot lv-'+esc(q.level)+'"></i><span class="grow" style="font-size:15px;font-weight:600;line-height:1.45">'+esc(q.text)+'</span>'+(q.required?'<span class="tag" style="background:#FFF1CC;color:var(--gold)">담임 필수</span>':'')+'</div>'+
+      '<span class="xs muted">'+esc([q.area,q.type,q.source==='AI꼬리질문'?'꼬리질문에서 추가됨':''].filter(Boolean).join(' · '))+'</span>'+
+      (note?'<span class="xs" style="color:'+(q.demoted?'#8A4E05':'var(--muted)')+'">'+esc(note)+'</span>':'')+
+      '<div class="row" style="gap:6px"><span class="xs muted">최근 기록</span>'+hist+'</div></button>';
+  });
+  html+='</div>'+nav('weak');render(html);
+}
+function practiceFromNote(id){var q=(S.weak||[]).filter(function(x){return x.id===id;})[0];if(!q)return;S.queue=[];S.queueGoLive=false;showPractice({id:q.id,text:q.text,type:q.type,level:q.level,kind:'note',required:q.required});}
+
+/* ---------------- 내 생기부 (업로드 · 지뢰찾기 결과) ---------------- */
+function showRecord(){
+  render('<div class="page">'+topbar()+'<h1>내 생기부</h1><div class="card pad muted small">불러오는 중…</div></div>'+nav('record'));
+  if(S.me.consent!=='동의'){renderRecord([]);return;}
+  api('getMyPoints',S.tok).then(renderRecord).catch(fail);
+}
+function renderRecord(points){
+  var me=S.me,rb=me.profiles.some(function(p){return p.recordBased;});
+  var html='<div class="page">'+topbar()+'<div class="col" style="gap:6px"><h1>내 생기부</h1><p class="small muted">면접관이 물을 만한 문장을 찾아 보여줘요.</p></div>';
+  if(me.consent!=='동의'){
+    html+='<div class="warn">생기부 분석은 개인정보 활용에 동의해야 쓸 수 있어요.</div><button class="btn" type="button" onclick="showConsent(false)">동의하러 가기</button>';
+  }else if(!rb){
+    html+='<div class="info">지원한 대학이 모두 생기부 기반 면접이 아니에요. 공통질문으로 연습하면 돼요.</div>';
+  }else{
+    html+='<div class="card pad col" style="gap:12px;'+(me.analysis?'':'border:1.5px solid var(--navy)')+'"><div class="row"><div class="ico" style="background:var(--navySoft);color:var(--navy)">'+IC.docplus+'</div><div class="grow col" style="gap:2px"><b style="font-size:15px">'+(me.analysis?'생기부 다시 분석하기':'생활기록부 올리기')+'</b><span class="xs muted">'+(me.analysis?esc(me.analysis):'나이스에서 내려받은 PDF 파일')+'</span></div></div>'+
+      '<label class="btn" style="display:flex;align-items:center;justify-content:center;height:50px">PDF 파일 선택<input type="file" accept="application/pdf,.pdf" onchange="uploadRecord(this)" style="display:none"></label>'+
+      '<p class="xs muted" style="line-height:1.55">한글(HWP) 파일은 읽을 수 없어요. 나이스에서 PDF로 저장해 주세요.</p></div>'+
+      '<div class="row" style="gap:12px;background:var(--navySoft);border-radius:14px;padding:16px"><div style="color:var(--navy);flex-shrink:0">'+IC.shield.replace('<svg','<svg width="22" height="22"')+'</div><div class="col" style="gap:4px"><b style="font-size:14px;color:var(--navy)">원본 파일은 분석 직후 바로 삭제돼요</b><span class="small" style="line-height:1.55;color:#33415A">파일은 서버에 저장되지 않아요. 휴대폰에서 글자만 뽑아 AI에 보내고, 면접 질문에 해당하는 문장만 일부 보관해요. 주민등록번호·주소·전화번호는 보내기 전에 지워요.</span></div></div>';
+  }
+  if(points&&points.length){
+    var hi={'고위험':0,'연습필요':0,'준비완료':0};points.forEach(function(p){hi[p.level]=(hi[p.level]||0)+1;});
+    html+='<div class="row" style="justify-content:space-between"><h2>생기부 지뢰찾기</h2><span class="xs muted">포인트 '+points.length+'개 · 고위험 '+hi['고위험']+'</span></div>';
+    points.forEach(function(p,idx){
+      var ev=esc(p.evidence);
+      String(p.riskPhrases||'').split(',').map(function(x){return x.trim();}).filter(Boolean).forEach(function(w){ev=ev.split(esc(w)).join('<span class="hl">'+esc(w)+'</span>');});
+      html+='<details class="card"'+(idx<2&&p.level==='고위험'?' open':'')+'><summary class="pad col" style="gap:8px"><div class="row" style="gap:8px"><span class="tag t-'+esc(p.level)+'">'+esc(p.level)+'</span><span class="xs muted grow">'+esc(p.area)+'</span></div>'+
+        '<div style="background:var(--ground);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.6">'+ev+'</div></summary>'+
+        '<div class="col" style="padding:0 16px 16px;gap:10px;font-size:14px;line-height:1.55">'+
+        (p.concepts?'<div><span class="xs muted" style="font-weight:700">핵심 개념</span><div>'+esc(p.concepts)+'</div></div>':'')+
+        (p.risk?'<div><span class="xs muted" style="font-weight:700">조심할 점</span><div style="color:#8E1B12">'+esc(p.risk)+'</div></div>':'')+
+        p.questions.map(function(q){return '<div class="col" style="gap:6px;border-top:1px solid var(--line2);padding-top:10px"><div class="row" style="gap:8px;align-items:flex-start"><i class="dot lv-'+esc(q.level)+'" style="margin-top:6px"></i><b class="grow">'+esc(q.text)+'</b></div>'+
+          (q.followups&&q.followups.length?'<span class="xs muted">예상 꼬리질문: '+esc(q.followups.join(' / '))+'</span>':'')+
+          (q.keywords?'<span class="xs muted">답변 키워드: '+esc(q.keywords)+'</span>':'')+
+          '<button type="button" class="btn-sm" style="align-self:flex-start" onclick="practiceById(\''+esc(q.id)+'\',\''+esc(q.level)+'\',\''+esc(q.type)+'\')">이 질문 연습하기</button></div>';}).join('')+
+        '</div></details>';
+    });
+  }
+  html+='</div>'+nav('record');render(html);
+  S.points=points;
+}
+function practiceById(id,level,type){
+  var q=null;(S.points||[]).forEach(function(p){p.questions.forEach(function(x){if(x.id===id)q=x;});});
+  if(!q)return;S.queue=[];S.queueGoLive=false;showPractice({id:q.id,text:q.text,type:type,level:level,kind:'point'});
+}
+
+/* PDF에서 글자만 뽑기 (pdf.js). 원본 파일은 서버로 보내지 않아요. */
+var PDFJS_VER='3.11.174';
+function loadScript(src){return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=function(){rej(new Error('도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'));};document.head.appendChild(s);});}
+function ensurePdfJs(){
+  if(window.pdfjsLib)return Promise.resolve();
+  var base='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/'+PDFJS_VER+'/';
+  return loadScript(base+'pdf.min.js').then(function(){
+    return fetch(base+'pdf.worker.min.js').then(function(r){return r.text();}).then(function(code){
+      pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+    }).catch(function(){pdfjsLib.GlobalWorkerOptions.workerSrc=base+'pdf.worker.min.js';});
+  });
+}
+function extractPdfText(buf){
+  return pdfjsLib.getDocument({data:buf}).promise.then(function(pdf){
+    var pages=[];for(var i=1;i<=pdf.numPages;i++)pages.push(i);
+    return pages.reduce(function(chain,n){return chain.then(function(acc){return pdf.getPage(n).then(function(pg){return pg.getTextContent();}).then(function(tc){
+      var out='',lastY=null;tc.items.forEach(function(it){var y=it.transform?Math.round(it.transform[5]):null;if(lastY!==null&&y!==null&&Math.abs(y-lastY)>2)out+='\n';out+=it.str;if(it.hasEOL)out+='\n';lastY=y;});
+      return acc+out+'\n';});});},Promise.resolve(''));
+  });
+}
+function redact(t){
+  return t.replace(/\d{6}\s*-\s*[1-4][\d*●○xX]{6}/g,'[주민번호 삭제]')
+    .replace(/01[016789]\s*-?\s*\d{3,4}\s*-?\s*\d{4}/g,'[전화번호 삭제]')
+    .replace(/0\d{1,2}\s*-\s*\d{3,4}\s*-\s*\d{4}/g,'[전화번호 삭제]')
+    .split('\n').map(function(line){return /(주\s*소|주민\s*등록|보호자\s*연락처|가족\s*상황)/.test(line)?'[개인정보 줄 삭제]':line;}).join('\n');
+}
+function uploadRecord(input){
+  var f=input.files&&input.files[0];input.value='';if(!f)return;
+  if(!/\.pdf$/i.test(f.name)&&f.type!=='application/pdf'){toast('PDF 파일만 올릴 수 있어요.');return;}
+  if(f.size>15*1024*1024){toast('파일이 너무 커요(15MB 이하).');return;}
+  loading('생기부에서 글자를 읽는 중','휴대폰 안에서만 읽어요');
+  var bufP=f.arrayBuffer();
+  ensurePdfJs().then(function(){return bufP;}).then(function(buf){return extractPdfText(buf.slice(0)).then(function(text){return {text:text,buf:buf};});})
+  .then(function(x){
+    var text=redact(x.text||'').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+    var payload={text:text};
+    if(text.length<300){
+      if(f.size>7*1024*1024)throw new Error('글자를 읽을 수 없는 스캔 파일이에요. 나이스에서 PDF로 다시 저장해 주세요.');
+      payload.pdfBase64=b64(x.buf);
+    }
+    loading('생기부 지뢰찾기 중','면접관이 물을 만한 문장을 찾고 있어요 (1~2분)');
+    return api('analyzeRecord',S.tok,payload);
+  }).then(function(r){
+    hideLoading();S.me.analysis='완료';
+    toast('면접 포인트 '+r.points+'개, 질문 '+r.questions+'개를 만들었어요.'+(r.dropped?' (원문과 맞지 않는 '+r.dropped+'개는 뺐어요)':''));
+    showRecord();
+  }).catch(fail);
+}
+function b64(buf){var bytes=new Uint8Array(buf),bin='',chunk=0x8000;for(var i=0;i<bytes.length;i+=chunk)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));return btoa(bin);}
+
+/* ---------------- 내 정보 ---------------- */
+function showMe(){
+  var me=S.me;
+  var html='<div class="page">'+backbar('내 정보','go(\'home\')')+
+   '<div class="card pad col"><b style="font-size:17px">'+esc(me.name)+'</b><span class="small muted">'+esc(me.hakbun)+' · '+esc(me.year)+'학년도'+(me.school?' · '+esc(me.school):'')+'</span></div>'+
+   '<div class="card pad col" style="gap:10px"><h2>개인정보 동의</h2><span class="small">상태: <b>'+esc(me.consent||'동의 전')+'</b>'+(me.consentAt?' <span class="muted">('+esc(me.consentAt)+')</span>':'')+'</span>'+
+   '<span class="xs muted">질문·훈련기록은 '+esc(me.expireDate)+'까지 보관 후 자동 삭제돼요.</span>'+
+   (me.consent==='동의'?'<button class="btn-sm" type="button" style="align-self:flex-start;color:var(--red)" onclick="withdraw()">필수 동의 철회 (분석 결과·훈련기록 삭제)</button>':'<button class="btn-sm" type="button" style="align-self:flex-start" onclick="showConsent(false)">동의하기</button>')+
+   '<label class="check small" style="margin-top:6px"><input type="checkbox" '+(me.reviewConsent?'checked':'')+' onchange="toggleReview(this.checked)"><span>[선택] 실제 면접 후기 익명 활용에 동의</span></label></div>'+
+   '<div class="card pad col" style="gap:10px"><h2>실제 면접 후기 남기기</h2><p class="small muted" style="line-height:1.55">면접을 보고 왔다면 실제로 받은 질문을 적어 주세요. 이름·학번 없이 저장돼서 내년 후배들의 질문은행이 돼요.</p>'+
+   '<button class="btn2" type="button" onclick="showReview()">후기 쓰기</button></div>'+
+   '<div class="card pad col" style="gap:10px"><h2>최근 답변 기록</h2><div id="hist" class="small muted">불러오는 중…</div></div>'+
+   '<button class="btn2" type="button" onclick="logoutNow()">로그아웃</button></div>';
+  render(html);
+  api('getMyHistory',S.tok).then(function(list){
+    $('hist').innerHTML=list.length?list.slice(0,15).map(function(a){return '<div class="col" style="gap:3px;padding:8px 0;border-bottom:1px solid var(--line2);color:var(--ink)"><div class="row" style="gap:6px"><span class="tag '+(a.result==='통과'?'t-준비완료':'t-고위험')+'">'+esc(a.result)+'</span><span class="xs muted">'+esc(a.at.slice(5,16))+' · '+esc(a.mode)+(a.teacherResult?' · 선생님 확인':'')+'</span></div><span>'+esc(a.question)+'</span>'+(a.teacherMemo&&a.teacherMemo!=='확인함'?'<span class="xs" style="color:var(--gold)">선생님: '+esc(a.teacherMemo)+'</span>':'')+'</div>';}).join(''):'아직 기록이 없어요.';
+  }).catch(function(){});
+}
+function toggleReview(v){api('setReviewConsent',S.tok,v).then(function(){S.me.reviewConsent=v;toast(v?'후기 활용에 동의했어요.':'후기 활용 동의를 철회했어요.');}).catch(fail);}
+function withdraw(){
+  if(!confirm('필수 동의를 철회하면 생기부 분석 결과와 모든 훈련 기록이 바로 삭제돼요. 계속할까요?'))return;
+  loading('삭제하는 중');
+  api('withdrawConsent',S.tok).then(function(){hideLoading();S.me.consent='철회';S.me.analysis='';S.me.reviewConsent=false;toast('철회하고 기록을 삭제했어요.');showMe();}).catch(fail);
+}
+function logoutNow(){api('logout',S.tok).catch(function(){});store('mj_tok',null);S={tok:null,me:null,pid:null,today:null,queue:[],practice:null,iv:null,tts:true,weakFilter:'전체'};showLogin();}
+var REVIEW_TYPES=['사실확인','개념설명','탐구과정','결과해석','한계·오차','전공연결','지원동기','가치판단','반론·압박'];
+function showReview(){
+  if(!S.me.reviewConsent){toast('먼저 [선택] 후기 활용에 동의해 주세요.');return;}
+  var opts=S.me.profiles.map(function(p){return '<option value="'+esc(p.id)+'">'+esc(p.uni+' '+p.major)+'</option>';}).join('');
+  var rowsH='';for(var i=0;i<4;i++)rowsH+=reviewRow(i);
+  render('<div class="page" style="padding-bottom:40px">'+backbar('면접 후기','showMe()')+
+   '<label class="inp" for="rvP">면접 본 대학</label><select class="text" id="rvP">'+opts+'</select>'+
+   '<div class="col" id="rvRows" style="gap:12px">'+rowsH+'</div>'+
+   '<button class="btn2" type="button" onclick="addReviewRow()">질문 칸 추가</button>'+
+   '<label class="inp" for="rvM">면접 분위기·방식 메모 (선택)</label><textarea class="text" id="rvM" style="min-height:90px" placeholder="예: 면접관 2명, 10분, 제시문 없음"></textarea>'+
+   '<button class="btn" type="button" onclick="sendReview()">후기 저장</button></div>');
+}
+function reviewRow(i){return '<div class="card pad col" style="gap:8px"><label class="xs muted" for="rvQ'+i+'">받은 질문 '+(i+1)+'</label><textarea class="text rvq" id="rvQ'+i+'" style="min-height:70px"></textarea><select class="text rvt" aria-label="질문 유형">'+REVIEW_TYPES.map(function(t){return '<option>'+t+'</option>';}).join('')+'</select></div>';}
+function addReviewRow(){var box=$('rvRows');var n=box.children.length;box.insertAdjacentHTML('beforeend',reviewRow(n));}
+function sendReview(){
+  var qs=[].slice.call(document.querySelectorAll('.rvq')),ts=[].slice.call(document.querySelectorAll('.rvt'));
+  var items=qs.map(function(q,i){return {question:q.value,type:ts[i].value};}).filter(function(x){return x.question.trim();});
+  if(!items.length){toast('받은 질문을 한 개 이상 적어 주세요.');return;}
+  loading('저장하는 중');
+  api('submitReview',S.tok,$('rvP').value,items,$('rvM').value).then(function(n){hideLoading();toast('후기 '+n+'개를 저장했어요. 고마워요!');showMe();}).catch(fail);
+}
+
+/* ---------------- 시작 ---------------- */
+(function boot(){
+  try{speechSynthesis.getVoices();}catch(e){}
+  if(!/^https:\/\//.test(APP_URL)){render('<div class="page" style="padding-top:80px"><h1>설정이 필요해요</h1><p class="muted" style="line-height:1.6">이 파일의 <b>APP_URL</b> 줄에 구글 웹 앱 주소를 붙여넣어 주세요.</p></div>');return;}
+  S.tok=store('mj_tok');
+  if(S.tok)loadMe();else showLogin();
+})();
+</script>
+</body>
+</html>
